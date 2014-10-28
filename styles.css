@@ -5,15 +5,42 @@ body {
     font-family: "Open Sans", sans-serif;
     text-align: center;
 }
-
+@font-face {
+  font-family: NettoBold;
+  src: local("NettoOT-Bold"),
+  local("NettoOT-Bold"),
+  url(NettoOT-Bold.otf);
+  font-weight: bold;
+}
+@font-face {
+  font-family: Netto;
+  src: local("NettoOT-Standard"),
+  local("NettoOT-Standard"),
+  url(NettoOT.otf);
+}
+body {
+    background-color: rgb(20,20,20);
+    color: white;
+    font-family: "NettoBold", sans-serif;
+    text-align: center;
+}
+a {
+    text-decoration: none;
+    color: white;
+}
+p {
+  font-family:"Netto", sans-serif;
+}
+a:hover {
+    color: gray;
+}
 #content {
     display: block;
     margin-left: auto;
     margin-right: auto
 }
-
 header {
-	
+	color:white;
 }
 
 footer {
