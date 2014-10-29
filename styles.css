@@ -22,7 +22,7 @@ body {
   font-family: AtariFont;
   src: local("AtariSmall"),
   local("AtariSmall"),
-  url(AtariSmall.ttf);
+  url(AtariSmall.otf);
 }
 body {
     background-color: rgb(20,20,20);
