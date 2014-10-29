@@ -103,20 +103,22 @@ class Star
 	private int myPositionX;
 	private int myPositionY;
 	private float lineSize;
+	private float lineSizeD;
 	private boolean blank;
 	Star()
 	{
 		myPositionX = (int)(Math.random()*800);
 		myPositionY = (int)(Math.random()*800);
 		lineSize = (int)(Math.random()*3);
+		lineSizeD = lineSize - 1;
 	}
 	public void show()
 	{
 		stroke(255);
 		line(myPositionX + lineSize, myPositionY, myPositionX - lineSize, myPositionY);
 		line(myPositionX, myPositionY + lineSize, myPositionX, myPositionY - lineSize);
-		line(myPositionX - 2, myPositionY - 2, myPositionX + 2, myPositionY + 2);
-		line(myPositionX + 2, myPositionY -2, myPositionX -2, myPositionY + 2);	
+		line(myPositionX - lineSizeD, myPositionY - lineSizeD, myPositionX + lineSizeD, myPositionY + lineSizeD);
+		line(myPositionX + lineSizeD, myPositionY -lineSizeD, myPositionX -lineSizeD, myPositionY + lineSizeD);	
 		if (lineSize == 3 && blank == false)
     {
     	blank = true;
@@ -132,6 +134,22 @@ class Star
     else if (blank == true)
     {
    	 	lineSize = lineSize - .5f;
+    }
+    if (lineSizeD == 2 && blank == false)
+    {
+    	blank = true;
+    }
+    else if (lineSizeD == 0 && blank == true)
+    {
+    	blank = false;
+    }
+    if (blank == false)
+    {
+    	lineSizeD = lineSizeD + .5f;
+    }
+    else if (blank == true)
+    {
+   	 	lineSizeD = lineSizeD - .5f;
     }
 	}
 }
