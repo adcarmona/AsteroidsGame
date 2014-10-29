@@ -18,10 +18,16 @@ body {
   local("NettoOT-Standard"),
   url(NettoOT.otf);
 }
+@font-face {
+  font-family: AtariFont;
+  src: local("AtariSmall"),
+  local("AtariSmall"),
+  url(AtariSmall.ttf);
+}
 body {
     background-color: rgb(20,20,20);
     color: white;
-    font-family: "NettoBold", sans-serif;
+    font-family: "AtariFont", sans-serif;
     text-align: center;
 }
 a {
@@ -29,7 +35,7 @@ a {
     color: white;
 }
 p {
-  font-family:"Netto", sans-serif;
+  font-family:"AtariFont", sans-serif;
 }
 a:hover {
     color: gray;
