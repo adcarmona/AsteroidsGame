@@ -17,11 +17,11 @@ public class AsteroidsGame extends PApplet {
 private Star [] Stars;
 private Asteroid [] Asteroids;
 private SpaceShip Atari = new SpaceShip();
-boolean leftKey = false;
-boolean rightKey = false;
-boolean boostKey = false;
-boolean warpKey = false;
-boolean warpCooldown = false;
+public boolean leftKey = false;
+public boolean rightKey = false;
+public boolean boostKey = false;
+public boolean warpKey = false;
+public boolean warpCooldown = false;
 public void setup() 
 {
   size(800,800);

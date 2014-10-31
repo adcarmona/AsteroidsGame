@@ -6,19 +6,6 @@ body {
     text-align: center;
 }
 @font-face {
-  font-family: NettoBold;
-  src: local("NettoOT-Bold"),
-  local("NettoOT-Bold"),
-  url(NettoOT-Bold.otf);
-  font-weight: bold;
-}
-@font-face {
-  font-family: Netto;
-  src: local("NettoOT-Standard"),
-  local("NettoOT-Standard"),
-  url(NettoOT.otf);
-}
-@font-face {
   font-family: AtariFont;
   src: local("AtariSmall"),
   local("AtariSmall"),
@@ -30,11 +17,14 @@ body {
     font-family: "AtariFont", sans-serif;
     text-align: center;
 }
+footer {
+  font-family:"AtariFont", sans-serif;
+}
 a {
     text-decoration: none;
     color: white;
 }
-p {
+footer {
   font-family:"AtariFont", sans-serif;
 }
 a:hover {
