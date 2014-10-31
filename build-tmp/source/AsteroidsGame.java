@@ -14,9 +14,9 @@ import java.io.IOException;
 
 public class AsteroidsGame extends PApplet {
 
-//your variable declarations here
-Star [] Stars;
-SpaceShip Atari = new SpaceShip();
+private Star [] Stars;
+private Asteroid [] Asteroids;
+private SpaceShip Atari = new SpaceShip();
 boolean leftKey = false;
 boolean rightKey = false;
 boolean boostKey = false;
@@ -24,79 +24,39 @@ boolean warpKey = false;
 boolean warpCooldown = false;
 public void setup() 
 {
-  //your code here
   size(800,800);
   Stars = new Star[100];
-  for(int i=0; i<Stars.length; i++)
- 	{
- 		Stars[i] = new Star();
- 	}
+  Asteroids = new Asteroid[10];
+  for(int i=0; i<Stars.length; i++) {Stars[i] = new Star();}
+ 	for(int i=0; i<Asteroids.length; i++) {Asteroids[i] = new Asteroid();}
 }
 public void draw() 
 {
-  //your code here
   background (0);
-  for (int i=0; i<Stars.length; i++)
- 	{
- 		Stars[i].show();
- 	}
+  for (int i=0; i<Stars.length; i++) {Stars[i].show();}
+ 	for (int i=0; i<Asteroids.length; i++) {Asteroids[i].show();}
+ 	for (int i=0; i<Asteroids.length; i++) {Asteroids[i].move();}
   Atari.show();
   Atari.move();
   Atari.cooldown();
-  if (leftKey == true)
-  {
-  	Atari.rotate(-5);
-  }
-  if (rightKey == true)
-  {
-  	Atari.rotate(5);
-  }
-  if (boostKey == true)
-  {
-  	Atari.accelerate(0.1f);
-  }
-  if (warpKey == true)
-  {
-  	Atari.hyperspace();
-  }
+  if (leftKey == true) {Atari.rotate(-5);}
+  if (rightKey == true) {Atari.rotate(5);}
+  if (boostKey == true) {Atari.accelerate(0.1f);}
+  if (warpKey == true) {Atari.hyperspace();}
 }
 public void keyPressed()
 {
-  if (keyCode == UP)
-  {
-  	boostKey = true;
-  }
-  if (keyCode == LEFT)
-  {
-  	leftKey = true;
-  }
-  if (keyCode == RIGHT)
-  {
-    rightKey = true;
-  }
-  if (keyCode == DOWN)
-  {
-  	warpKey = true;
-  }
+  if (keyCode == UP) {boostKey = true;}
+  if (keyCode == LEFT) {leftKey = true;}
+  if (keyCode == RIGHT) {rightKey = true;}
+  if (keyCode == DOWN) {warpKey = true;}
 }
 public void keyReleased()
 {
-	if (keyCode == UP)
-	{
-		boostKey = false;
-	}
-	if (keyCode == LEFT)
-	{
-		leftKey = false;
-	}
-	if (keyCode == RIGHT)
-	{
-		rightKey = false;
-	}
-	if (keyCode == DOWN)
-  {
-  	warpKey = false;
-  }
+	if (keyCode == UP) {boostKey = false;}
+	if (keyCode == LEFT) {leftKey = false;}
+	if (keyCode == RIGHT) {rightKey = false;}
+	if (keyCode == DOWN) {warpKey = false;}
 }
 class Star
 {
@@ -119,38 +79,14 @@ class Star
 		line(myPositionX, myPositionY + lineSize, myPositionX, myPositionY - lineSize);
 		line(myPositionX - lineSizeD, myPositionY - lineSizeD, myPositionX + lineSizeD, myPositionY + lineSizeD);
 		line(myPositionX + lineSizeD, myPositionY -lineSizeD, myPositionX -lineSizeD, myPositionY + lineSizeD);	
-		if (lineSize == 3 && blank == false)
-    {
-    	blank = true;
-    }
-    else if (lineSize == 0 && blank == true)
-    {
-    	blank = false;
-    }
-    if (blank == false)
-    {
-    	lineSize = lineSize + .5f;
-    }
-    else if (blank == true)
-    {
-   	 	lineSize = lineSize - .5f;
-    }
-    if (lineSizeD == 2 && blank == false)
-    {
-    	blank = true;
-    }
-    else if (lineSizeD == 0 && blank == true)
-    {
-    	blank = false;
-    }
-    if (blank == false)
-    {
-    	lineSizeD = lineSizeD + .5f;
-    }
-    else if (blank == true)
-    {
-   	 	lineSizeD = lineSizeD - .5f;
-    }
+		if (lineSize == 3 && blank == false) {blank = true;}
+    else if (lineSize == 0 && blank == true) {blank = false;}
+    if (blank == false) {lineSize = lineSize + .5f;}
+    else if (blank == true) {lineSize = lineSize - .5f;}
+    if (lineSizeD == 2 && blank == false) {blank = true;}
+    else if (lineSizeD == 0 && blank == true) {blank = false;}
+    if (blank == false) {lineSizeD = lineSizeD + .5f;}
+    else if (blank == true) {lineSizeD = lineSizeD - .5f;}
 	}
 }
 class SpaceShip extends Floater  
@@ -222,6 +158,50 @@ class SpaceShip extends Floater
   			cooldownCount = 0;
   		}
   	}
+  }
+}
+class Asteroid extends Floater
+{
+	private int rotSpeed;
+	Asteroid()
+	{
+		myColor = 254;
+		corners = 6;
+		xCorners = new int[corners];
+		yCorners = new int[corners];
+		xCorners[0] = (int)(Math.random()*15)-30;
+		yCorners[0] = (int)(Math.random()*15)-30;
+		xCorners[1] = (int)(Math.random()*15);
+		yCorners[1] = (int)(Math.random()*15)-30;
+		xCorners[2] = (int)(Math.random()*15);
+		yCorners[2] = (int)(Math.random()*15);
+		xCorners[3] = (int)(Math.random()*15);
+		yCorners[3] = (int)(Math.random()*15);
+		xCorners[4] = (int)(Math.random()*15)-30;
+		yCorners[4] = (int)(Math.random()*15);
+		xCorners[5] = (int)(Math.random()*15)-30;
+		yCorners[5] = (int)(Math.random()*15);
+		myCenterX = (int)(Math.random()*800);
+		myCenterY = (int)(Math.random()*800);
+		myDirectionX = (int)(Math.random()*3)+1;
+    myDirectionY = (int)(Math.random()*3)+1;
+    myPointDirection = (int)(Math.random()*360);
+    rotSpeed = (int)(Math.random()*5);
+	}
+	public void setX(int x) {myCenterX = x;}
+  public int getX() {return (int)myCenterX;} 
+  public void setY(int y) {myCenterY = y;}  
+  public int getY() {return (int)myCenterY;}
+  public void setDirectionX(double x) {myDirectionX = x;}   
+  public double getDirectionX() {return myDirectionX;} 
+  public void setDirectionY(double y) {myDirectionY = y;}   
+  public double getDirectionY() {return myDirectionY;}  
+  public void setPointDirection(int degrees) {myPointDirection = degrees;}   
+  public double getPointDirection() {return myPointDirection;}
+  public void move()
+  {
+  	rotate(rotSpeed);
+  	super.move();
   }
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
