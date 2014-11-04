@@ -18,7 +18,7 @@ public void draw()
 {
 	if (warpCooldown == true) {fill(0,0,0,60);}
 	else {fill(0,0,0,250);}
-	rect(0,0,800,800);
+	rect(0,0,799,799);
 	for (int i=0; i<Stars.length; i++) {Stars[i].show();}
 	for (int i=0; i<Asteroids.length; i++) {Asteroids[i].show();}
 	for (int i=0; i<Asteroids.length; i++) {Asteroids[i].move();}
