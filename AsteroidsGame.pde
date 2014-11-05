@@ -6,6 +6,7 @@ public boolean rightKey = false;
 public boolean boostKey = false;
 public boolean warpKey = false;
 public boolean warpCooldown = false;
+public boolean charge = false;
 public void setup() 
 {
 	size(800,800);
@@ -17,7 +18,17 @@ public void setup()
 public void draw() 
 {
 	if (warpCooldown == true) {fill(0,0,0,60);}
-	else {fill(0,0,0,250);}
+	else 
+	{
+		if (charge == false)
+		{
+			fill(0,0,0,250);
+		}
+		else
+		{
+			fill(0,0,0,120);
+		}
+	}
 	rect(0,0,799,799);
 	for (int i=0; i<Stars.length; i++) {Stars[i].show();}
 	for (int i=0; i<Asteroids.length; i++) {Asteroids[i].show();}
@@ -25,10 +36,51 @@ public void draw()
 	Atari.show();
 	Atari.move();
 	Atari.cooldown();
-	if (leftKey == true) {Atari.rotate(-5);}
-	if (rightKey == true) {Atari.rotate(5);}
-	if (boostKey == true) {Atari.accelerate(0.1);}
-	if (warpKey == true) {Atari.hyperspace();}
+	Atari.charge();
+	if (leftKey == true) 
+	{
+		if (charge == false)
+		{
+			Atari.rotate(-5);
+		}
+		else 
+		{
+			Atari.rotate(-9);
+		}
+	}
+	if (rightKey == true) 
+	{
+		if (charge == false)
+		{
+			Atari.rotate(5);
+		}
+		else 
+		{
+			Atari.rotate(9);
+		}
+	}
+	if (boostKey == true) 
+	{
+		if (charge == false)
+		{
+			Atari.accelerate(0.1);
+		}
+		else 
+		{
+
+		}
+	}
+	if (warpKey == true) 
+	{
+		if (charge == false)
+		{
+			Atari.hyperspace();
+		}
+		else 
+		{
+			
+		}
+	}
 }
 public void keyPressed()
 {
@@ -36,6 +88,7 @@ public void keyPressed()
 	if (keyCode == LEFT) {leftKey = true;}
 	if (keyCode == RIGHT) {rightKey = true;}
 	if (keyCode == DOWN) {warpKey = true;}
+	if (keyCode == CONTROL) {charge = true;}
 }
 public void keyReleased()
 {
@@ -43,6 +96,12 @@ public void keyReleased()
 	if (keyCode == LEFT) {leftKey = false;}
 	if (keyCode == RIGHT) {rightKey = false;}
 	if (keyCode == DOWN) {warpKey = false;}
+	if (keyCode == CONTROL) 
+	{
+		charge = false;
+		Atari.setDirectionX(0);
+		Atari.setDirectionY(0);
+	}
 }
 class Star
 {
@@ -51,7 +110,7 @@ class Star
 	private float lineSize;
 	private float lineSizeD;
 	private boolean blank;
-	Star()
+	public Star()
 	{
 		myPositionX = (int)(Math.random()*800);
 		myPositionY = (int)(Math.random()*800);
@@ -78,6 +137,7 @@ class Star
 class SpaceShip extends Floater  
 {   
 	private int cooldownCount;
+	private float chargeMeter;
 	SpaceShip()
 	{ 
 		myColor = 255;
@@ -143,6 +203,25 @@ class SpaceShip extends Floater
 				background(220);
 				warpCooldown = false;
 				cooldownCount = 0;
+			}
+		}
+	}
+	private void charge()
+	{
+		if(charge == true)
+		{
+			chargeMeter = chargeMeter + 0.01;
+		}
+		if(charge == false)
+		{
+			if(chargeMeter > 0)
+			{
+				Atari.accelerate(chargeMeter);
+				chargeMeter = chargeMeter - 0.01;
+			}
+			else
+			{
+				
 			}
 		}
 	}
