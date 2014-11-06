@@ -23,11 +23,13 @@ public boolean boostKey = false;
 public boolean warpKey = false;
 public boolean warpCooldown = false;
 public boolean charge = false;
+public boolean charging = false;
+public boolean chargeCooldown = false;
 public void setup() 
 {
 	size(800,800);
 	Stars = new Star[100];
-	Asteroids = new Asteroid[10];
+	Asteroids = new Asteroid[7];
 	for(int i=0; i<Stars.length; i++) {Stars[i] = new Star();}
 	for(int i=0; i<Asteroids.length; i++) {Asteroids[i] = new Asteroid();}
 }
@@ -36,7 +38,7 @@ public void draw()
 	if (warpCooldown == true) {fill(0,0,0,60);}
 	else 
 	{
-		if (charge == false)
+		if (charging == false)
 		{
 			fill(0,0,0,250);
 		}
@@ -46,6 +48,36 @@ public void draw()
 		}
 	}
 	rect(0,0,799,799);
+	if (charge == false && charging == false && chargeCooldown == false)
+	{
+		fill(255);
+		text("CHARGE READY", 10, 790);
+	}
+	if (charge == false && charging == true)
+	{
+		fill(255);
+		text("CHARGING", 10, 750);
+	}
+	if (charging == false && charge == true)
+	{
+		fill(255);
+		text("CHARGE ACTIVE", 10, 790);
+	}
+	if (chargeCooldown == true)
+	{
+		fill(255,0,0);
+		text("CHARGE COOLDOWN", 10, 790);
+	}
+	if (warpCooldown == false)
+	{
+		fill(255);
+		text("WARP READY", 10, 770);
+	}
+	else
+	{
+		fill(255,0,0);
+		text("WARP COOLDOWN", 10, 770);
+	}
 	for (int i=0; i<Stars.length; i++) {Stars[i].show();}
 	for (int i=0; i<Asteroids.length; i++) {Asteroids[i].show();}
 	for (int i=0; i<Asteroids.length; i++) {Asteroids[i].move();}
@@ -88,7 +120,7 @@ public void draw()
 	}
 	if (warpKey == true) 
 	{
-		if (charge == false)
+		if (charge == false && charging == false)
 		{
 			Atari.hyperspace();
 		}
@@ -104,7 +136,17 @@ public void keyPressed()
 	if (keyCode == LEFT) {leftKey = true;}
 	if (keyCode == RIGHT) {rightKey = true;}
 	if (keyCode == DOWN) {warpKey = true;}
-	if (keyCode == CONTROL) {charge = true;}
+	if (keyCode == CONTROL) 
+	{
+		if (charging == false && chargeCooldown == false)
+		{
+			charge = true;
+		}
+		else
+		{
+			
+		}
+	}
 }
 public void keyReleased()
 {
@@ -114,9 +156,13 @@ public void keyReleased()
 	if (keyCode == DOWN) {warpKey = false;}
 	if (keyCode == CONTROL) 
 	{
-		charge = false;
-		Atari.setDirectionX(0);
-		Atari.setDirectionY(0);
+		if (chargeCooldown == false)
+		{
+			charge = false;
+			chargeCooldown = true;
+			Atari.setDirectionX(0);
+			Atari.setDirectionY(0);
+		}
 	}
 }
 class Star
@@ -152,7 +198,8 @@ class Star
 }
 class SpaceShip extends Floater  
 {   
-	private int cooldownCount;
+	private int cooldownCount = 0;
+	private int chargeCount = 0;
 	private float chargeMeter;
 	SpaceShip()
 	{ 
@@ -221,10 +268,20 @@ class SpaceShip extends Floater
 				cooldownCount = 0;
 			}
 		}
+		if(chargeCooldown == true)
+		{
+			chargeCount = chargeCount + 1;
+			if (chargeCount == 200)
+			{
+				background(220);
+				chargeCooldown = false;
+				chargeCount = 0;
+			}
+		}
 	}
 	private void charge()
 	{
-		if(charge == true)
+		if(charge == true && chargeCooldown == false)
 		{
 			chargeMeter = chargeMeter + 0.01f;
 		}
@@ -233,11 +290,12 @@ class SpaceShip extends Floater
 			if(chargeMeter > 0)
 			{
 				Atari.accelerate(chargeMeter);
+				charging = true;
 				chargeMeter = chargeMeter - 0.01f;
 			}
 			else
 			{
-				
+				charging = false;
 			}
 		}
 	}
@@ -248,27 +306,31 @@ class Asteroid extends Floater
 	Asteroid()
 	{
 		myColor = 254;
-		corners = 6;
+		corners = 8;
 		xCorners = new int[corners];
 		yCorners = new int[corners];
-		xCorners[0] = (int)(Math.random()*15)-30;
-		yCorners[0] = (int)(Math.random()*15)-30;
-		xCorners[1] = (int)(Math.random()*15);
-		yCorners[1] = (int)(Math.random()*15)-30;
-		xCorners[2] = (int)(Math.random()*15);
-		yCorners[2] = (int)(Math.random()*15);
-		xCorners[3] = (int)(Math.random()*15);
-		yCorners[3] = (int)(Math.random()*15);
-		xCorners[4] = (int)(Math.random()*15)-30;
-		yCorners[4] = (int)(Math.random()*15);
-		xCorners[5] = (int)(Math.random()*15)-30;
-		yCorners[5] = (int)(Math.random()*15);
+		xCorners[0] = 0;
+		yCorners[0] = (int)(Math.random()*41)-42;
+		xCorners[1] = (int)(Math.random()*41)+1;
+		yCorners[1] = (int)(Math.random()*41)-42;
+		xCorners[2] = (int)(Math.random()*41)+1;
+		yCorners[2] = 0;
+		xCorners[3] = (int)(Math.random()*41)+1;
+		yCorners[3] = (int)(Math.random()*41)+1;
+		xCorners[4] = 0;
+		yCorners[4] = (int)(Math.random()*41)+1;
+		xCorners[5] = (int)(Math.random()*41)-42;
+		yCorners[5] = (int)(Math.random()*41)+1;
+		xCorners[6] = (int)(Math.random()*41)-42;
+		yCorners[6] = 0;
+		xCorners[7] = (int)(Math.random()*41)-42;
+		yCorners[7] = (int)(Math.random()*41)-42;
 		myCenterX = (int)(Math.random()*800);
 		myCenterY = (int)(Math.random()*800);
-		myDirectionX = (int)(Math.random()*10)-5;
-		myDirectionY = (int)(Math.random()*10)-5;
+		myDirectionX = (int)(Math.random()*7)-4;
+		myDirectionY = (int)(Math.random()*7)-4;
 		myPointDirection = (int)(Math.random()*360);
-		rotSpeed = (int)(Math.random()*10)-5;
+		rotSpeed = (int)(Math.random()*11)-6;
 	}
 	public void setX(int x) {myCenterX = x;}
 	public int getX() {return (int)myCenterX;} 
