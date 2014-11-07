@@ -23,6 +23,7 @@ public boolean boostKey = false;
 public boolean warpKey = false;
 public boolean warpCooldown = false;
 public boolean charge = false;
+public boolean chargeMax = false;
 public boolean charging = false;
 public boolean chargeCooldown = false;
 public void setup() 
@@ -58,10 +59,15 @@ public void draw()
 		fill(255);
 		text("CHARGING", 10, 750);
 	}
-	if (charging == false && charge == true)
+	if (charging == false && charge == true && chargeMax == false)
 	{
 		fill(255);
 		text("CHARGE ACTIVE", 10, 790);
+	}
+	if (chargeMax == true)
+	{
+		fill(255);
+		text("CHARGE MAXIMUM", 10, 790);
 	}
 	if (chargeCooldown == true)
 	{
@@ -283,13 +289,21 @@ class SpaceShip extends Floater
 	{
 		if(charge == true && chargeCooldown == false)
 		{
-			chargeMeter = chargeMeter + 0.01f;
+			if (chargeMeter < 1)
+			{
+				chargeMeter = chargeMeter + 0.01f;
+			}
+			else 
+			{
+				chargeMax = true;
+			}
 		}
 		if(charge == false)
 		{
+			chargeMax = false;
 			if(chargeMeter > 0)
 			{
-				Atari.accelerate(chargeMeter);
+				Atari.accelerate(0.2f);
 				charging = true;
 				chargeMeter = chargeMeter - 0.01f;
 			}
