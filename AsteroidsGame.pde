@@ -42,6 +42,9 @@ public void draw()
 	{
 		fill(255);
 		text("CHARGING", 10, 750);
+		noFill();
+		stroke(255);
+		ellipse(Atari.getX(), Atari.getY(), 40, 40);
 	}
 	if (charging == false && charge == true && chargeMax == false)
 	{
@@ -77,24 +80,32 @@ public void draw()
 	Atari.charge();
 	if (leftKey == true) 
 	{
-		if (charge == false)
+		if (charge == false && charging == false)
 		{
 			Atari.rotate(-5);
 		}
-		else 
+		else if (charge == true)
 		{
 			Atari.rotate(-9);
+		}
+		else if (charging == true)
+		{
+			Atari.rotate(-1);
 		}
 	}
 	if (rightKey == true) 
 	{
-		if (charge == false)
+		if (charge == false && charging == false)
 		{
 			Atari.rotate(5);
 		}
-		else 
+		else if (charge == true)
 		{
 			Atari.rotate(9);
+		}
+		else if (charging == true)
+		{
+			Atari.rotate(1);
 		}
 	}
 	if (boostKey == true) 
@@ -263,7 +274,6 @@ class SpaceShip extends Floater
 			chargeCount = chargeCount + 1;
 			if (chargeCount == 200)
 			{
-				background(220);
 				chargeCooldown = false;
 				chargeCount = 0;
 			}
