@@ -44,8 +44,8 @@ public void draw()
 	{
 		fill(255);
 		text("CHARGING", 10, 750);
-		noFill();
-		stroke(255);
+		noStroke();
+		fill(255,255,255,50);
 		ellipse(Atari.getX(), Atari.getY(), 40, 40);
 	}
 	if (charging == false && charge == true && chargeMax == false)
@@ -55,13 +55,13 @@ public void draw()
 	}
 	if (chargeMax == true)
 	{
-		fill(255);
+		fill(255,255,0);
 		text("CHARGE MAXIMUM", 10, 790);
 	}
 	if (chargeCooldown == true)
 	{
 		fill(255,0,0);
-		text("CHARGE COOLDOWN", 10, 790);
+		text("CHARGE OVERHEAT", 10, 790);
 	}
 	if (warpCooldown == false)
 	{
@@ -71,7 +71,7 @@ public void draw()
 	else
 	{
 		fill(255,0,0);
-		text("WARP COOLDOWN", 10, 770);
+		text("WARP OVERHEAT", 10, 770);
 	}
 	for (int i=0; i<Stars.length; i++) {Stars[i].show();}
 	for (int i=0; i<Asteroids.length; i++) {Asteroids[i].show();}
