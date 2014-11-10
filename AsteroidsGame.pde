@@ -1,5 +1,6 @@
 private Star [] Stars;
 private Asteroid [] Asteroids;
+private ArrayList <Asteroid> AsteroidField;
 private SpaceShip Atari = new SpaceShip();
 public boolean leftKey = false;
 public boolean rightKey = false;
@@ -15,6 +16,7 @@ public void setup()
 	size(800,800);
 	Stars = new Star[100];
 	Asteroids = new Asteroid[7];
+	AsteroidField = new ArrayList <Asteroid>();
 	for(int i=0; i<Stars.length; i++) {Stars[i] = new Star();}
 	for(int i=0; i<Asteroids.length; i++) {Asteroids[i] = new Asteroid();}
 }
@@ -116,7 +118,7 @@ public void draw()
 		}
 		else 
 		{
-
+			//Boosting disabled while Charging
 		}
 	}
 	if (warpKey == true) 
@@ -127,7 +129,7 @@ public void draw()
 		}
 		else 
 		{
-			
+			//Hyperspace disabled while Charging
 		}
 	}
 }
@@ -145,7 +147,7 @@ public void keyPressed()
 		}
 		else
 		{
-			
+			//Charging disabled while in the middle of a Charge
 		}
 	}
 }
@@ -352,8 +354,11 @@ class Asteroid extends Floater
 	public double getPointDirection() {return myPointDirection;}
 	public void move()
 	{
-		rotate(rotSpeed);
-		super.move();
+		if (dist((float)myCenterX, (float)myCenterY, Atari.getX(), Atari.getY()) > 20)
+		{
+			rotate(rotSpeed);
+			super.move();
+		}
 	}
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
