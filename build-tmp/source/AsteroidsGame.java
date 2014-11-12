@@ -15,9 +15,9 @@ import java.io.IOException;
 public class AsteroidsGame extends PApplet {
 
 private Star [] Stars;
-private Asteroid [] Asteroids;
 private ArrayList <Asteroid> AsteroidField;
 private SpaceShip Atari = new SpaceShip();
+public int asteroidCount = 7;
 public boolean leftKey = false;
 public boolean rightKey = false;
 public boolean boostKey = false;
@@ -31,10 +31,9 @@ public void setup()
 {
 	size(800,800);
 	Stars = new Star[100];
-	Asteroids = new Asteroid[7];
 	AsteroidField = new ArrayList <Asteroid>();
 	for(int i=0; i<Stars.length; i++) {Stars[i] = new Star();}
-	for(int i=0; i<Asteroids.length; i++) {Asteroids[i] = new Asteroid();}
+	for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid());}
 }
 public void draw() 
 {
@@ -90,8 +89,16 @@ public void draw()
 		text("WARP OVERHEAT", 10, 770);
 	}
 	for (int i=0; i<Stars.length; i++) {Stars[i].show();}
-	for (int i=0; i<Asteroids.length; i++) {Asteroids[i].show();}
-	for (int i=0; i<Asteroids.length; i++) {Asteroids[i].move();}
+	for (int i = 0; i < AsteroidField.size(); i++)
+	{
+		Asteroid asteroid = AsteroidField.get(i);
+		asteroid.move();
+		asteroid.show();
+		if (dist((float)AsteroidField.get(i).getX(), (float)AsteroidField.get(i).getY(), Atari.getX(), Atari.getY()) < 20)
+		{
+			AsteroidField.remove(i);
+		}
+	}
 	Atari.show();
 	Atari.move();
 	Atari.cooldown();
@@ -370,11 +377,8 @@ class Asteroid extends Floater
 	public double getPointDirection() {return myPointDirection;}
 	public void move()
 	{
-		if (dist((float)myCenterX, (float)myCenterY, Atari.getX(), Atari.getY()) > 20)
-		{
 			rotate(rotSpeed);
 			super.move();
-		}
 	}
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
