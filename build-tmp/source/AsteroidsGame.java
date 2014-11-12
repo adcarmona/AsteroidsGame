@@ -40,14 +40,8 @@ public void draw()
 	if (warpCooldown == true) {fill(0,0,0,60);}
 	else 
 	{
-		if (charging == false)
-		{
-			fill(0,0,0,250);
-		}
-		else
-		{
-			fill(0,0,0,120);
-		}
+		if (charging == false) {fill(0,0,0,250);}
+		else {fill(0,0,0,120);}
 	}
 	rect(0,0,799,799);
 	if (charge == false && charging == false && chargeCooldown == false)
@@ -101,8 +95,8 @@ public void draw()
 	}
 	Atari.show();
 	Atari.move();
-	Atari.cooldown();
 	Atari.charge();
+	Atari.cooldown();
 	if (leftKey == true) 
 	{
 		if (charge == false && charging == false)
