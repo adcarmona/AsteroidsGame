@@ -288,7 +288,7 @@ class SpaceShip extends Floater
 		{
 			if (chargeMeter < 1)
 			{
-				chargeMeter = chargeMeter + 0.01;
+				chargeMeter = chargeMeter + 0.1;
 			}
 			else 
 			{
@@ -302,7 +302,7 @@ class SpaceShip extends Floater
 			{
 				Atari.accelerate(0.2);
 				charging = true;
-				chargeMeter = chargeMeter - 0.01;
+				chargeMeter = chargeMeter - 0.1;
 			}
 			else
 			{
