@@ -16,6 +16,7 @@ public class AsteroidsGame extends PApplet {
 
 private Star [] Stars;
 private ArrayList <Asteroid> AsteroidField;
+private ArrayList <Bullet> Ammo;
 private SpaceShip Atari = new SpaceShip();
 public int asteroidCount = 7;
 public boolean leftKey = false;
@@ -32,6 +33,7 @@ public void setup()
 	size(800,800);
 	Stars = new Star[100];
 	AsteroidField = new ArrayList <Asteroid>();
+	Ammo = new ArrayList <Bullet>();
 	for(int i=0; i<Stars.length; i++) {Stars[i] = new Star();}
 	for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid());}
 }
@@ -99,6 +101,19 @@ public void draw()
 			AsteroidField.remove(i);
 		}
 	}
+	if (Ammo.size() > 0)
+	{
+		for (int i = 0; i < Ammo.size(); i++)
+		{
+			Bullet bullet = Ammo.get(i);
+			bullet.move();
+			bullet.show();
+			if (bullet.getX() > 799 || bullet.getX() < 1 || bullet.getY() > 799 || bullet.getY() < 1)
+			{
+				Ammo.remove(i);
+			}
+		}
+	}
 	Atari.show();
 	Atari.move();
 	Atari.chargeboost();
@@ -158,6 +173,7 @@ public void draw()
 }
 public void keyPressed()
 {
+	if (key == ' ') {Ammo.add(new Bullet(Atari));}
 	if (keyCode == UP) {boostKey = true;}
 	if (keyCode == LEFT) {leftKey = true;}
 	if (keyCode == RIGHT) {rightKey = true;}
@@ -176,6 +192,7 @@ public void keyPressed()
 }
 public void keyReleased()
 {
+	//if (key == ' ') {}
 	if (keyCode == UP) {boostKey = false;}
 	if (keyCode == LEFT) {leftKey = false;}
 	if (keyCode == RIGHT) {rightKey = false;}
@@ -331,6 +348,33 @@ class SpaceShip extends Floater
 				charging = false;
 			}
 		}
+	}
+}
+class Bullet extends Floater
+{
+	Bullet(SpaceShip theShip)
+	{
+		myCenterX = theShip.getX();
+		myCenterY = theShip.getY();
+		myPointDirection = theShip.getPointDirection();
+		double dRadians = myPointDirection*(Math.PI/180);
+		myDirectionX = 5*Math.cos(dRadians) + myDirectionX;
+		myDirectionY = 5*Math.sin(dRadians) + myDirectionY;
+	}
+	public void setX(int x) {myCenterX = x;}
+	public int getX() {return (int)myCenterX;} 
+	public void setY(int y) {myCenterY = y;}  
+	public int getY() {return (int)myCenterY;}
+	public void setDirectionX(double x) {myDirectionX = x;}   
+	public double getDirectionX() {return myDirectionX;} 
+	public void setDirectionY(double y) {myDirectionY = y;}   
+	public double getDirectionY() {return myDirectionY;}  
+	public void setPointDirection(int degrees) {myPointDirection = degrees;}   
+	public double getPointDirection() {return myPointDirection;}
+	public void show()
+	{
+		fill(255);
+		ellipse((float)myCenterX, (float)myCenterY, 5, 5);
 	}
 }
 class Asteroid extends Floater
