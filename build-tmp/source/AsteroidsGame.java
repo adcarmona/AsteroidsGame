@@ -101,7 +101,7 @@ public void draw()
 	}
 	Atari.show();
 	Atari.move();
-	Atari.charge();
+	Atari.chargeboost();
 	Atari.cooldown();
 	if (leftKey == true) 
 	{
@@ -304,7 +304,7 @@ class SpaceShip extends Floater
 			}
 		}
 	}
-	private void charge()
+	private void chargeboost()
 	{
 		if(charge == true && chargeCooldown == false)
 		{
