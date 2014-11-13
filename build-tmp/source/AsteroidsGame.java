@@ -44,10 +44,13 @@ public void draw()
 		else {fill(0,0,0,120);}
 	}
 	rect(0,0,799,799);
-	if (charge == false && charging == false && chargeCooldown == false)
+	if (charge == false && charging == false)
 	{
-		fill(255);
-		text("CHARGE READY", 10, 790);
+		if (chargeCooldown == false)
+		{
+			fill(255);
+			text("CHARGE READY", 10, 790);
+		}
 	}
 	if (charge == false && charging == true)
 	{
@@ -57,10 +60,13 @@ public void draw()
 		fill(255,255,255,50);
 		ellipse(Atari.getX(), Atari.getY(), 40, 40);
 	}
-	if (charging == false && charge == true && chargeMax == false)
+	if (charging == false && charge == true)
 	{
-		fill(255);
-		text("CHARGE ACTIVE", 10, 790);
+		if (chargeMax == false)
+		{
+			fill(255);
+			text("CHARGE ACTIVE", 10, 790);
+		}
 	}
 	if (chargeMax == true)
 	{
