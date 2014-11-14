@@ -1,6 +1,7 @@
 private Star [] Stars;
 private ArrayList <Asteroid> AsteroidField;
 private ArrayList <Bullet> Ammo;
+private ArrayList <Trail> ShipTrail;
 private SpaceShip Atari = new SpaceShip();
 public int asteroidCount = 7;
 public boolean leftKey = false;
@@ -18,6 +19,7 @@ public void setup()
 	Stars = new Star[100];
 	AsteroidField = new ArrayList <Asteroid>();
 	Ammo = new ArrayList <Bullet>();
+	ShipTrail = new ArrayList <Trail>();
 	for(int i=0; i<Stars.length; i++) {Stars[i] = new Star();}
 	for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid());}
 }
@@ -98,6 +100,15 @@ public void draw()
 			}
 		}
 	}
+	if (ShipTrail.size() > 0)
+	{
+		for (int i = 0; i < ShipTrail.size(); i++)
+		{
+			Trail trail = ShipTrail.get(i);
+			trail.move();
+			trail.show();
+		}
+	}
 	Atari.show();
 	Atari.move();
 	Atari.chargeboost();
@@ -137,6 +148,7 @@ public void draw()
 		if (charge == false)
 		{
 			Atari.accelerate(0.1);
+			ShipTrail.add(new Trail(Atari));
 		}
 		else 
 		{
@@ -158,7 +170,7 @@ public void draw()
 public void keyPressed()
 {
 	if (key == ' ') {Ammo.add(new Bullet(Atari));}
-	if (keyCode == UP) {boostKey = true;}
+	if (keyCode == UP) {boostKey = true; }
 	if (keyCode == LEFT) {leftKey = true;}
 	if (keyCode == RIGHT) {rightKey = true;}
 	if (keyCode == DOWN) {warpKey = true;}
@@ -358,6 +370,33 @@ class Bullet extends Floater
 	public void show()
 	{
 		fill(255);
+		ellipse((float)myCenterX, (float)myCenterY, 5, 5);
+	}
+}
+class Trail extends Floater
+{
+		Trail(SpaceShip theShip)
+	{
+		myCenterX = theShip.getX();
+		myCenterY = theShip.getY();
+		myPointDirection = theShip.getPointDirection();
+		double dRadians = myPointDirection*(Math.PI/180);
+		myDirectionX = -1*(5*Math.cos(dRadians) + myDirectionX);
+		myDirectionY = -1*(5*Math.sin(dRadians) + myDirectionY);
+	}
+	public void setX(int x) {myCenterX = x;}
+	public int getX() {return (int)myCenterX;} 
+	public void setY(int y) {myCenterY = y;}  
+	public int getY() {return (int)myCenterY;}
+	public void setDirectionX(double x) {myDirectionX = x;}   
+	public double getDirectionX() {return myDirectionX;} 
+	public void setDirectionY(double y) {myDirectionY = y;}   
+	public double getDirectionY() {return myDirectionY;}  
+	public void setPointDirection(int degrees) {myPointDirection = degrees;}   
+	public double getPointDirection() {return myPointDirection;}
+	public void show()
+	{
+		noStroke();
 		ellipse((float)myCenterX, (float)myCenterY, 5, 5);
 	}
 }
