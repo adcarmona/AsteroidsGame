@@ -29,6 +29,7 @@ public boolean charge = false;
 public boolean chargeMax = false;
 public boolean charging = false;
 public boolean chargeCooldown = false;
+public boolean menu = false;
 public void setup() 
 {
 	size(800,800);
@@ -40,6 +41,8 @@ public void setup()
 	for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid());}
 }
 public void draw() 
+{
+if (menu == false)
 {
 	if (warpCooldown == true) {fill(0,0,0,60);}
 	else 
@@ -53,12 +56,14 @@ public void draw()
 		if (chargeCooldown == false)
 		{
 			fill(255);
+			textSize(12);
 			text("CHARGE READY", 10, 790);
 		}
 	}
 	if (charge == false && charging == true)
 	{
 		fill(255);
+		textSize(12);
 		text("CHARGING", 10, 750);
 		noStroke();
 		fill(255,255,255,50);
@@ -69,27 +74,32 @@ public void draw()
 		if (chargeMax == false)
 		{
 			fill(255);
+			textSize(12);
 			text("CHARGE ACTIVE", 10, 790);
 		}
 	}
 	if (chargeMax == true)
 	{
 		fill(255,255,0);
+		textSize(12);
 		text("CHARGE MAXIMUM", 10, 790);
 	}
 	if (chargeCooldown == true)
 	{
 		fill(255,0,0);
+		textSize(12);
 		text("CHARGE OVERHEAT", 10, 790);
 	}
 	if (warpCooldown == false)
 	{
 		fill(255);
+		textSize(12);
 		text("WARP READY", 10, 770);
 	}
 	else
 	{
 		fill(255,0,0);
+		textSize(12);
 		text("WARP OVERHEAT", 10, 770);
 	}
 	for (int i=0; i<Stars.length; i++) {Stars[i].show();}
@@ -98,7 +108,7 @@ public void draw()
 		Asteroid asteroid = AsteroidField.get(i);
 		asteroid.move();
 		asteroid.show();
-		if (dist((float)AsteroidField.get(i).getX(), (float)AsteroidField.get(i).getY(), Atari.getX(), Atari.getY()) < 20)
+		if (dist((float)AsteroidField.get(i).getX(), (float)AsteroidField.get(i).getY(), Atari.getX(), Atari.getY()) < 50)
 		{
 			AsteroidField.remove(i);
 		}
@@ -123,7 +133,7 @@ public void draw()
 			Trail trail = ShipTrail.get(i);
 			trail.move();
 			trail.show();
-		if (trail.getColor() == 0)//(dist((float)ShipTrail.get(i).getX(), (float)ShipTrail.get(i).getY(), Atari.getX(), Atari.getY()) > 50)
+		if (trail.getColor() == 0)
 		{
 			ShipTrail.remove(i);
 		}
@@ -186,6 +196,7 @@ public void draw()
 			//Hyperspace disabled while Charging
 		}
 	}
+}
 }
 public void keyPressed()
 {
@@ -259,6 +270,7 @@ class SpaceShip extends Floater
 {   
 	private int cooldownCount = 0;
 	private int chargeCount = 0;
+	private float shieldSize = 0;
 	private float chargeMeter;
 	SpaceShip()
 	{ 
@@ -286,6 +298,7 @@ class SpaceShip extends Floater
 		myDirectionY = 0;
 		myPointDirection = 0;
 		cooldownCount = 0;
+		shieldSize = 50;
 	}
 	public void setX(int x) {myCenterX = x;}
 	public int getX() {return (int)myCenterX;} 
@@ -343,10 +356,16 @@ class SpaceShip extends Floater
 		{
 			if (chargeMeter < 1)
 			{
+				noFill();
+				ellipse((float)myCenterX,(float)myCenterY,shieldSize,shieldSize);
 				chargeMeter = chargeMeter + 0.01f;
+				shieldSize = shieldSize - .1f;
+
 			}
 			else 
 			{
+				noFill();
+				ellipse((float)myCenterX,(float)myCenterY,shieldSize,shieldSize);
 				chargeMax = true;
 			}
 		}
@@ -356,12 +375,14 @@ class SpaceShip extends Floater
 			if(chargeMeter > 0)
 			{
 				Atari.accelerate(0.2f);
+				ShipTrail.add(new Trail(Atari));
 				charging = true;
 				chargeMeter = chargeMeter - 0.01f;
 			}
 			else
 			{
 				charging = false;
+				shieldSize = 50;
 			}
 		}
 	}
