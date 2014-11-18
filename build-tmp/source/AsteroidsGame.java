@@ -123,8 +123,12 @@ public void draw()
 			Trail trail = ShipTrail.get(i);
 			trail.move();
 			trail.show();
+		if (trail.getColor() == 0)//(dist((float)ShipTrail.get(i).getX(), (float)ShipTrail.get(i).getY(), Atari.getX(), Atari.getY()) > 50)
+		{
+			ShipTrail.remove(i);
 		}
 	}
+}
 	Atari.show();
 	Atari.move();
 	Atari.chargeboost();
@@ -393,10 +397,11 @@ class Trail extends Floater
 {
 		Trail(SpaceShip theShip)
 	{
+		myColor = 255;
 		myCenterX = theShip.getX();
 		myCenterY = theShip.getY();
 		myPointDirection = theShip.getPointDirection();
-		double dRadians = myPointDirection*(Math.PI/180);
+		double dRadians = myPointDirection*(Math.PI/180)+(Math.random()*.8f)-.4f;
 		myDirectionX = -1*(5*Math.cos(dRadians) + myDirectionX);
 		myDirectionY = -1*(5*Math.sin(dRadians) + myDirectionY);
 	}
@@ -410,10 +415,13 @@ class Trail extends Floater
 	public double getDirectionY() {return myDirectionY;}  
 	public void setPointDirection(int degrees) {myPointDirection = degrees;}   
 	public double getPointDirection() {return myPointDirection;}
+	public int getColor() {return myColor;}
 	public void show()
 	{
 		noStroke();
+		fill(myColor);
 		ellipse((float)myCenterX, (float)myCenterY, 5, 5);
+		if(myColor > 0) {myColor = myColor - 17;}
 	}
 }
 class Asteroid extends Floater
