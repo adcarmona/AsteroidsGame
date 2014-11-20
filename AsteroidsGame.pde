@@ -1,19 +1,42 @@
+//AsteroidsGame - Antonio Carmona - AP Computer Science
+
+//Array of Background Stars
 private Star [] Stars;
+
+//ArrayLists for Asteroids, Bullets, and the ship's Trail
 private ArrayList <Asteroid> AsteroidField;
 private ArrayList <Bullet> Ammo;
 private ArrayList <Trail> ShipTrail;
+
+//The Player's Ship
 private SpaceShip Atari = new SpaceShip();
-public int asteroidCount = 7;
-public boolean leftKey = false;
-public boolean rightKey = false;
-public boolean boostKey = false;
-public boolean warpKey = false;
-public boolean warpCooldown = false;
-public boolean charge = false;
-public boolean chargeMax = false;
-public boolean charging = false;
-public boolean chargeCooldown = false;
-public boolean menu = false;
+
+//The starting amount of Asteroids (Placeholder)
+private int asteroidCount = 7;
+
+//Menu-related
+private int startColor = 0;
+private boolean startBlank = true;
+
+//Booleans that check key inputs
+private boolean leftKey = false;
+private boolean rightKey = false;
+private boolean boostKey = false;
+private boolean warpKey = false;
+private boolean chargeKey = false;
+
+//Checks if Warp or Charge has been recently used
+private boolean warpCooldown = false;
+private boolean chargeCooldown = false;
+
+//Checks status of Charge
+private boolean chargeMax = false;
+private boolean charging = false;
+
+//Checks if a menu screen is open
+private boolean menu = true;
+
+
 public void setup() 
 {
 	size(800,800);
@@ -26,165 +49,213 @@ public void setup()
 }
 public void draw() 
 {
-if (menu == false)
-{
-	if (warpCooldown == true) {fill(0,0,0,60);}
-	else 
+	if (menu == false)
 	{
-		if (charging == false) {fill(0,0,0,250);}
-		else {fill(0,0,0,120);}
-	}
-	rect(0,0,799,799);
-	if (charge == false && charging == false)
-	{
-		if (chargeCooldown == false)
+		if (warpCooldown == true) 
 		{
-			fill(255);
-			textSize(12);
-			text("CHARGE READY", 10, 790);
+			fill(0,0,0,60);
 		}
-	}
-	if (charge == false && charging == true)
-	{
-		fill(255);
-		textSize(12);
-		text("CHARGING", 10, 750);
-		noStroke();
-		fill(255,255,255,50);
-		ellipse(Atari.getX(), Atari.getY(), 40, 40);
-	}
-	if (charging == false && charge == true)
-	{
-		if (chargeMax == false)
+		else 
 		{
-			fill(255);
-			textSize(12);
-			text("CHARGE ACTIVE", 10, 790);
-		}
-	}
-	if (chargeMax == true)
-	{
-		fill(255,255,0);
-		textSize(12);
-		text("CHARGE MAXIMUM", 10, 790);
-	}
-	if (chargeCooldown == true)
-	{
-		fill(255,0,0);
-		textSize(12);
-		text("CHARGE OVERHEAT", 10, 790);
-	}
-	if (warpCooldown == false)
-	{
-		fill(255);
-		textSize(12);
-		text("WARP READY", 10, 770);
-	}
-	else
-	{
-		fill(255,0,0);
-		textSize(12);
-		text("WARP OVERHEAT", 10, 770);
-	}
-	for (int i=0; i<Stars.length; i++) {Stars[i].show();}
-	for (int i = 0; i < AsteroidField.size(); i++)
-	{
-		Asteroid asteroid = AsteroidField.get(i);
-		asteroid.move();
-		asteroid.show();
-		if (dist((float)AsteroidField.get(i).getX(), (float)AsteroidField.get(i).getY(), Atari.getX(), Atari.getY()) < 50)
-		{
-			AsteroidField.remove(i);
-		}
-	}
-	if (Ammo.size() > 0)
-	{
-		for (int i = 0; i < Ammo.size(); i++)
-		{
-			Bullet bullet = Ammo.get(i);
-			bullet.move();
-			bullet.show();
-			if (bullet.getX() > 799 || bullet.getX() < 1 || bullet.getY() > 799 || bullet.getY() < 1)
+			if (charging == false) 
 			{
-				Ammo.remove(i);
+				fill(0,0,0,250);
+			}
+			else 
+			{	
+				fill(0,0,0,120);
+			}
+		}
+		rect(0,0,799,799);
+		if (chargeKey == false && charging == false)
+		{
+			if (chargeCooldown == false)
+			{
+				fill(255);
+				textSize(12);
+				text("CHARGE READY", 10, 790);
+			}
+		}
+		if (chargeKey == false && charging == true)
+		{
+			fill(255);
+			textSize(12);
+			text("CHARGING", 10, 750);
+			noStroke();
+			fill(255,255,255,50);
+			ellipse(Atari.getX(), Atari.getY(), 40, 40);
+		}
+		if (charging == false && chargeKey == true)
+		{
+			if (chargeMax == false)
+			{
+				fill(255);
+				textSize(12);
+				text("CHARGE ACTIVE", 10, 790);
+			}
+		}
+		if (chargeMax == true)
+		{
+			fill(255,255,0);
+			textSize(12);
+			text("CHARGE MAXIMUM", 10, 790);
+		}
+		if (chargeCooldown == true)
+		{
+			fill(255,0,0);
+			textSize(12);
+			text("CHARGE OVERHEAT", 10, 790);
+		}
+		if (warpCooldown == false)
+		{
+			fill(255);
+			textSize(12);
+			text("WARP READY", 10, 770);
+		}
+		else
+		{
+			fill(255,0,0);
+			textSize(12);
+			text("WARP OVERHEAT", 10, 770);
+		}
+		for (int i=0; i<Stars.length; i++) 
+		{
+			Stars[i].show();
+		}
+		for (int i = 0; i < AsteroidField.size(); i++)
+		{
+			Asteroid asteroid = AsteroidField.get(i);
+			asteroid.move();
+			asteroid.show();
+			if (dist((float)AsteroidField.get(i).getX(), (float)AsteroidField.get(i).getY(), Atari.getX(), Atari.getY()) < 50)
+			{
+				AsteroidField.remove(i);
+			}
+		}
+		if (Ammo.size() > 0)
+		{
+			for (int i = 0; i < Ammo.size(); i++)
+			{
+				Bullet bullet = Ammo.get(i);
+				bullet.move();
+				bullet.show();
+				if (bullet.getX() > 799 || bullet.getX() < 1 || bullet.getY() > 799 || bullet.getY() < 1)
+				{
+					Ammo.remove(i);
+				}
+			}
+		}
+		if (ShipTrail.size() > 0)
+		{
+			for (int i = 0; i < ShipTrail.size(); i++)
+			{
+				Trail trail = ShipTrail.get(i);
+				trail.move();
+				trail.show();
+				if (trail.getColor() == 0)
+				{
+					ShipTrail.remove(i);
+				}
+			}
+		}
+		Atari.show();
+		Atari.move();
+		Atari.chargeboost();
+		Atari.cooldown();
+		if (leftKey == true) 
+		{
+			if (chargeKey == false && charging == false)
+			{
+				Atari.rotate(-5);
+			}
+			else if (chargeKey == true)
+			{
+				Atari.rotate(-9);
+			}
+			else if (charging == true)
+			{
+				Atari.rotate(-1);
+			}
+		}
+		if (rightKey == true) 
+		{
+			if (chargeKey == false && charging == false)
+			{
+				Atari.rotate(5);
+			}
+			else if (chargeKey == true)
+			{
+				Atari.rotate(9);
+			}
+			else if (charging == true)
+			{
+				Atari.rotate(1);
+			}
+		}
+		if (boostKey == true) 
+		{
+			if (chargeKey == false)
+			{
+				Atari.accelerate(0.1);
+				ShipTrail.add(new Trail(Atari));
+			}
+			else 
+			{
+				//Boosting disabled while Charging
+			}
+		}
+		if (warpKey == true) 
+		{
+			if (chargeKey == false && charging == false)
+			{
+				Atari.hyperspace();
+			}
+			else 
+			{
+				//Hyperspace disabled while Charging
 			}
 		}
 	}
-	if (ShipTrail.size() > 0)
+	else if (menu == true)
 	{
-		for (int i = 0; i < ShipTrail.size(); i++)
+		background(0);
+		fill(255);
+		textSize(100);
+		text("ASTEROIDS",120,200);
+		if(startBlank == true)
 		{
-			Trail trail = ShipTrail.get(i);
-			trail.move();
-			trail.show();
-		if (trail.getColor() == 0)
-		{
-			ShipTrail.remove(i);
+			startColor = startColor + 1;
 		}
+		else if (startBlank == false)
+		{
+			startColor = startColor - 1;
+		}
+		if (startColor == 0)
+		{
+			startBlank = true;
+		}
+		if (startColor == 255)
+		{
+			startBlank = false;
+		}
+		fill(startColor);
+		textSize(50);
+		text("- Press SPACE to Start -", 110, 500);
 	}
-}
-	Atari.show();
-	Atari.move();
-	Atari.chargeboost();
-	Atari.cooldown();
-	if (leftKey == true) 
-	{
-		if (charge == false && charging == false)
-		{
-			Atari.rotate(-5);
-		}
-		else if (charge == true)
-		{
-			Atari.rotate(-9);
-		}
-		else if (charging == true)
-		{
-			Atari.rotate(-1);
-		}
-	}
-	if (rightKey == true) 
-	{
-		if (charge == false && charging == false)
-		{
-			Atari.rotate(5);
-		}
-		else if (charge == true)
-		{
-			Atari.rotate(9);
-		}
-		else if (charging == true)
-		{
-			Atari.rotate(1);
-		}
-	}
-	if (boostKey == true) 
-	{
-		if (charge == false)
-		{
-			Atari.accelerate(0.1);
-			ShipTrail.add(new Trail(Atari));
-		}
-		else 
-		{
-			//Boosting disabled while Charging
-		}
-	}
-	if (warpKey == true) 
-	{
-		if (charge == false && charging == false)
-		{
-			Atari.hyperspace();
-		}
-		else 
-		{
-			//Hyperspace disabled while Charging
-		}
-	}
-}
 }
 public void keyPressed()
 {
-	if (key == ' ') {Ammo.add(new Bullet(Atari));}
+	if (key == ' ') 
+	{
+		if (menu == false)
+		{
+			Ammo.add(new Bullet(Atari));
+		}
+		else
+		{
+			menu = false;
+		}
+	}
 	if (keyCode == UP) {boostKey = true; }
 	if (keyCode == LEFT) {leftKey = true;}
 	if (keyCode == RIGHT) {rightKey = true;}
@@ -193,7 +264,7 @@ public void keyPressed()
 	{
 		if (charging == false && chargeCooldown == false)
 		{
-			charge = true;
+			chargeKey = true;
 		}
 		else
 		{
@@ -212,7 +283,7 @@ public void keyReleased()
 	{
 		if (chargeCooldown == false)
 		{
-			charge = false;
+			chargeKey = false;
 			chargeCooldown = true;
 			Atari.setDirectionX(0);
 			Atari.setDirectionY(0);
@@ -336,7 +407,7 @@ class SpaceShip extends Floater
 	}
 	private void chargeboost()
 	{
-		if(charge == true && chargeCooldown == false)
+		if(chargeKey == true && chargeCooldown == false)
 		{
 			if (chargeMeter < 1)
 			{
@@ -353,7 +424,7 @@ class SpaceShip extends Floater
 				chargeMax = true;
 			}
 		}
-		if(charge == false)
+		if(chargeKey == false)
 		{
 			chargeMax = false;
 			if(chargeMeter > 0)
