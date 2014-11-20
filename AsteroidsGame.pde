@@ -16,6 +16,7 @@ private int asteroidCount = 7;
 
 //Menu-related
 private int startColor = 0;
+private boolean menu = true;
 private boolean startBlank = true;
 
 //Booleans that check key inputs
@@ -33,9 +34,7 @@ private boolean chargeCooldown = false;
 private boolean chargeMax = false;
 private boolean charging = false;
 
-//Checks if a menu screen is open
-private boolean menu = true;
-
+private boolean gameOver = false;
 
 public void setup() 
 {
@@ -66,102 +65,14 @@ public void draw()
 				fill(0,0,0,120);
 			}
 		}
-		rect(0,0,799,799);
-		if (chargeKey == false && charging == false)
+		rect(-1,-1,801,801);
+				if (gameOver == false)
 		{
-			if (chargeCooldown == false)
-			{
-				fill(255);
-				textSize(12);
-				text("CHARGE READY", 10, 790);
-			}
-		}
-		if (chargeKey == false && charging == true)
-		{
-			fill(255);
-			textSize(12);
-			text("CHARGING", 10, 750);
-			noStroke();
-			fill(255,255,255,50);
-			ellipse(Atari.getX(), Atari.getY(), 40, 40);
-		}
-		if (charging == false && chargeKey == true)
-		{
-			if (chargeMax == false)
-			{
-				fill(255);
-				textSize(12);
-				text("CHARGE ACTIVE", 10, 790);
-			}
-		}
-		if (chargeMax == true)
-		{
-			fill(255,255,0);
-			textSize(12);
-			text("CHARGE MAXIMUM", 10, 790);
-		}
-		if (chargeCooldown == true)
-		{
-			fill(255,0,0);
-			textSize(12);
-			text("CHARGE OVERHEAT", 10, 790);
-		}
-		if (warpCooldown == false)
-		{
-			fill(255);
-			textSize(12);
-			text("WARP READY", 10, 770);
-		}
-		else
-		{
-			fill(255,0,0);
-			textSize(12);
-			text("WARP OVERHEAT", 10, 770);
-		}
-		for (int i=0; i<Stars.length; i++) 
-		{
-			Stars[i].show();
-		}
-		for (int i = 0; i < AsteroidField.size(); i++)
-		{
-			Asteroid asteroid = AsteroidField.get(i);
-			asteroid.move();
-			asteroid.show();
-			if (dist((float)AsteroidField.get(i).getX(), (float)AsteroidField.get(i).getY(), Atari.getX(), Atari.getY()) < 50)
-			{
-				AsteroidField.remove(i);
-			}
-		}
-		if (Ammo.size() > 0)
-		{
-			for (int i = 0; i < Ammo.size(); i++)
-			{
-				Bullet bullet = Ammo.get(i);
-				bullet.move();
-				bullet.show();
-				if (bullet.getX() > 799 || bullet.getX() < 1 || bullet.getY() > 799 || bullet.getY() < 1)
-				{
-					Ammo.remove(i);
-				}
-			}
-		}
-		if (ShipTrail.size() > 0)
-		{
-			for (int i = 0; i < ShipTrail.size(); i++)
-			{
-				Trail trail = ShipTrail.get(i);
-				trail.move();
-				trail.show();
-				if (trail.getColor() == 0)
-				{
-					ShipTrail.remove(i);
-				}
-			}
-		}
-		Atari.show();
-		Atari.move();
-		Atari.chargeboost();
-		Atari.cooldown();
+			Atari.show();
+			Atari.move();
+			Atari.chargeboost();
+			Atari.cooldown();
+
 		if (leftKey == true) 
 		{
 			if (chargeKey == false && charging == false)
@@ -215,6 +126,149 @@ public void draw()
 				//Hyperspace disabled while Charging
 			}
 		}
+		}
+		for (int i=0; i<Stars.length; i++) 
+		{
+			Stars[i].show();
+		}
+		if (ShipTrail.size() > 0)
+		{
+			for (int i = 0; i < ShipTrail.size(); i++)
+			{
+				Trail trail = ShipTrail.get(i);
+				trail.move();
+				trail.show();
+				if (trail.getColor() == 0)
+				{
+					ShipTrail.remove(i);
+				}
+			}
+		}
+		if (Ammo.size() > 0)
+		{
+			for (int i = 0; i < Ammo.size(); i++)
+			{
+				Bullet bullet = Ammo.get(i);
+				bullet.move();
+				bullet.show();
+				if (bullet.getX() > 799 || bullet.getX() < 1 || bullet.getY() > 799 || bullet.getY() < 1)
+				{
+					Ammo.remove(i);
+				}
+			}
+		}
+		for (int i = 0; i < AsteroidField.size(); i++)
+		{
+			Asteroid asteroid = AsteroidField.get(i);
+			asteroid.move();
+			asteroid.show();
+			if (dist((float)AsteroidField.get(i).getX(), (float)AsteroidField.get(i).getY(), Atari.getX(), Atari.getY()) < 50)
+			{
+				if (charging == true)
+				{
+					AsteroidField.remove(i);
+				}
+				if (charging == false && gameOver == false)
+				{
+					background(255,0,0);
+					gameOver = true;
+				}
+
+			}
+		}
+		if (gameOver == false)
+		{
+			fill(255);
+			text("X-Position", 10, 650);
+			text((int)Atari.getX(), 100, 650);
+			text("Y-Position", 10, 670);
+			text((int)Atari.getY(), 100, 670);
+			text("X-Velocity", 10, 710);
+			text((int)Atari.getDirectionX(), 100, 710);
+			text("Y-Velocity", 10, 730);
+			text((int)Atari.getDirectionY(), 100, 730);
+		}
+		if (gameOver == true)
+		{
+			textSize(70);
+			fill(255);
+			text("GAME OVER",195,400);
+			textSize(40);
+			text("- Press R to Restart -", 190, 500);
+			textSize(12);
+			fill(255, 0, 0);
+			text("X-Position", 10, 650);
+			text("N/A", 100, 650);
+			text("Y-Position", 10, 670);
+			text("N/A", 100, 670);
+			text("X-Velocity", 10, 710);
+			text("N/A", 100, 710);
+			text("Y-Velocity", 10, 730);
+			text("N/A", 100, 730);
+		}
+		if (chargeKey == false && charging == false)
+		{
+			if (chargeCooldown == false && gameOver == false)
+			{
+				fill(255);
+				textSize(12);
+				text("CHARGE READY", 10, 790);
+			}
+			else if (gameOver == true)
+			{
+				fill(255, 0, 0);
+				textSize(12);
+				text("CHARGE DISABLED", 10, 790);
+			}
+		}
+		if (chargeKey == false && charging == true)
+		{
+			fill(255);
+			textSize(12);
+			text("CHARGING", 10, 750);
+			noStroke();
+			fill(255,255,255,50);
+			ellipse(Atari.getX(), Atari.getY(), 40, 40);
+		}
+		if (charging == false && chargeKey == true && gameOver == false)
+		{
+			if (chargeMax == false)
+			{
+				fill(255);
+				textSize(12);
+				text("CHARGE ACTIVE", 10, 790);
+			}
+		}
+		if (chargeMax == true)
+		{
+			fill(255,255,0);
+			textSize(12);
+			text("CHARGE MAXIMUM", 10, 790);
+		}
+		if (chargeCooldown == true && gameOver == false)
+		{
+			fill(255,0,0);
+			textSize(12);
+			text("CHARGE OVERHEAT", 10, 790);
+		}
+		if (warpCooldown == false && gameOver == false)
+		{
+			fill(255);
+			textSize(12);
+			text("WARP READY", 10, 770);
+		}
+		else if (warpCooldown == true && gameOver == false)
+		{
+			fill(255,0,0);
+			textSize(12);
+			text("WARP OVERHEAT", 10, 770);
+		}
+		else
+		{
+			fill(255,0,0);
+			textSize(12);
+			text("WARP DISABLED", 10, 770);
+		}
 	}
 	else if (menu == true)
 	{
@@ -247,12 +301,13 @@ public void keyPressed()
 {
 	if (key == ' ') 
 	{
-		if (menu == false)
+		if (menu == false && gameOver == false)
 		{
 			Ammo.add(new Bullet(Atari));
 		}
-		else
+		else if (menu == true)
 		{
+			background(255);
 			menu = false;
 		}
 	}
@@ -262,7 +317,7 @@ public void keyPressed()
 	if (keyCode == DOWN) {warpKey = true;}
 	if (keyCode == CONTROL) 
 	{
-		if (charging == false && chargeCooldown == false)
+		if (charging == false && chargeCooldown == false && gameOver == false)
 		{
 			chargeKey = true;
 		}
@@ -270,6 +325,21 @@ public void keyPressed()
 		{
 			//Charging disabled while in the middle of a Charge
 		}
+	}
+	if (key == 'r' && gameOver == true)
+	{
+		background(255);
+		Atari.setX(400);
+		Atari.setY(400);
+		Atari.setDirectionX(0);
+		Atari.setDirectionY(0);
+		Atari.setPointDirection(0);
+		chargeCooldown = false;
+		warpCooldown = false;
+		for(int i=0; i<asteroidCount; i++) {AsteroidField.remove(0);}
+		for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid());}
+		menu = true;
+		gameOver = false;
 	}
 }
 public void keyReleased()
@@ -325,7 +395,6 @@ class SpaceShip extends Floater
 {   
 	private int cooldownCount = 0;
 	private int chargeCount = 0;
-	private float shieldSize = 0;
 	private float chargeMeter;
 	SpaceShip()
 	{ 
@@ -353,7 +422,6 @@ class SpaceShip extends Floater
 		myDirectionY = 0;
 		myPointDirection = 0;
 		cooldownCount = 0;
-		shieldSize = 50;
 	}
 	public void setX(int x) {myCenterX = x;}
 	public int getX() {return (int)myCenterX;} 
@@ -411,16 +479,10 @@ class SpaceShip extends Floater
 		{
 			if (chargeMeter < 1)
 			{
-				noFill();
-				ellipse((float)myCenterX,(float)myCenterY,shieldSize,shieldSize);
 				chargeMeter = chargeMeter + 0.01;
-				shieldSize = shieldSize - .1;
-
 			}
 			else 
 			{
-				noFill();
-				ellipse((float)myCenterX,(float)myCenterY,shieldSize,shieldSize);
 				chargeMax = true;
 			}
 		}
@@ -437,7 +499,6 @@ class SpaceShip extends Floater
 			else
 			{
 				charging = false;
-				shieldSize = 50;
 			}
 		}
 	}
@@ -505,7 +566,7 @@ class Asteroid extends Floater
 	private int rotSpeed;
 	Asteroid()
 	{
-		myColor = 254;
+		myColor = 150;
 		corners = 8;
 		xCorners = new int[corners];
 		yCorners = new int[corners];
