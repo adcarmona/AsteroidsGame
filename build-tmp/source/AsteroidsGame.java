@@ -32,6 +32,8 @@ private int asteroidCount = 7;
 
 //Menu-related
 private int startColor = 0;
+private float highScore = 0;
+private float timer = 0;
 private boolean menu = true;
 private boolean startBlank = true;
 
@@ -203,6 +205,11 @@ public void draw()
 			text((int)Atari.getDirectionX(), 100, 710);
 			text("Y-Velocity", 10, 730);
 			text((int)Atari.getDirectionY(), 100, 730);
+			timer = timer + .02f;
+			text("Survival Time:", 10, 610);
+			text((int)timer, 100, 610);
+			text("Best Time:", 10, 590);
+			text((int)highScore, 100, 590);
 		}
 		if (gameOver == true)
 		{
@@ -221,6 +228,10 @@ public void draw()
 			text("N/A", 100, 710);
 			text("Y-Velocity", 10, 730);
 			text("N/A", 100, 730);
+			text("Survival Time:", 10, 610);
+			text((int)timer, 100, 610);
+			text("Best Time:", 10, 590);
+			text((int)highScore, 100, 590);
 		}
 		if (chargeKey == false && charging == false)
 		{
@@ -345,6 +356,7 @@ public void keyPressed()
 	if (key == 'r' && gameOver == true)
 	{
 		background(255);
+		gameOver = false;
 		Atari.setX(400);
 		Atari.setY(400);
 		Atari.setDirectionX(0);
@@ -352,10 +364,11 @@ public void keyPressed()
 		Atari.setPointDirection(0);
 		chargeCooldown = false;
 		warpCooldown = false;
+		if (timer > highScore) {highScore = timer;}
+		timer = 0;
 		for(int i=0; i<asteroidCount; i++) {AsteroidField.remove(0);}
 		for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid());}
 		menu = true;
-		gameOver = false;
 	}
 }
 public void keyReleased()
