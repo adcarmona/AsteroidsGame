@@ -67,8 +67,39 @@ public void draw()
 				fill(0,0,0,120);
 			}
 		}
+
 		rect(-1,-1,801,801);
-				if (gameOver == false)
+		for (int i=0; i<Stars.length; i++) 
+		{
+			Stars[i].show();
+		}
+		if (ShipTrail.size() > 0)
+		{
+			for (int i = 0; i < ShipTrail.size(); i++)
+			{
+				Trail trail = ShipTrail.get(i);
+				trail.move();
+				trail.show();
+				if (trail.getColor() == 0)
+				{
+					ShipTrail.remove(i);
+				}
+			}
+		}
+		if (Ammo.size() > 0)
+		{
+			for (int i = 0; i < Ammo.size(); i++)
+			{
+				Bullet bullet = Ammo.get(i);
+				bullet.move();
+				bullet.show();
+				if (bullet.getX() > 799 || bullet.getX() < 1 || bullet.getY() > 799 || bullet.getY() < 1)
+				{
+					Ammo.remove(i);
+				}
+			}
+		}
+		if (gameOver == false)
 		{
 			Atari.show();
 			Atari.move();
@@ -129,36 +160,6 @@ public void draw()
 			}
 		}
 		}
-		for (int i=0; i<Stars.length; i++) 
-		{
-			Stars[i].show();
-		}
-		if (ShipTrail.size() > 0)
-		{
-			for (int i = 0; i < ShipTrail.size(); i++)
-			{
-				Trail trail = ShipTrail.get(i);
-				trail.move();
-				trail.show();
-				if (trail.getColor() == 0)
-				{
-					ShipTrail.remove(i);
-				}
-			}
-		}
-		if (Ammo.size() > 0)
-		{
-			for (int i = 0; i < Ammo.size(); i++)
-			{
-				Bullet bullet = Ammo.get(i);
-				bullet.move();
-				bullet.show();
-				if (bullet.getX() > 799 || bullet.getX() < 1 || bullet.getY() > 799 || bullet.getY() < 1)
-				{
-					Ammo.remove(i);
-				}
-			}
-		}
 		for (int i = 0; i < AsteroidField.size(); i++)
 		{
 			Asteroid asteroid = AsteroidField.get(i);
@@ -172,8 +173,8 @@ public void draw()
 				}
 				if (charging == false && gameOver == false)
 				{
-					background(255,0,0);
 					gameOver = true;
+					background(255,0,0);
 				}
 
 			}
@@ -197,6 +198,9 @@ public void draw()
 		}
 		if (gameOver == true)
 		{
+			Atari.show();
+			Atari.move();
+			Atari.rotate(-1);
 			textSize(70);
 			fill(255);
 			text("GAME OVER",195,400);
@@ -237,8 +241,8 @@ public void draw()
 			fill(255);
 			textSize(12);
 			text("CHARGING", 10, 750);
-			noStroke();
-			fill(255,255,255,50);
+			stroke(255);
+			noFill();
 			ellipse(Atari.getX(), Atari.getY(), 40, 40);
 		}
 		if (charging == false && chargeKey == true && gameOver == false)
@@ -350,7 +354,7 @@ public void keyPressed()
 		warpCooldown = false;
 		if (timer > highScore) {highScore = timer;}
 		timer = 0;
-		for(int i=0; i<asteroidCount; i++) {AsteroidField.remove(0);}
+		AsteroidField.clear();
 		for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid());}
 		menu = true;
 	}
@@ -446,6 +450,59 @@ class SpaceShip extends Floater
 	public double getDirectionY() {return myDirectionY;}  
 	public void setPointDirection(int degrees) {myPointDirection = degrees;}   
 	public double getPointDirection() {return myPointDirection;}
+	public void show () 
+	{  
+		if (gameOver == false)  
+		{
+		fill(0);   
+		stroke(myColor);
+		xCorners[0] = 16;
+		yCorners[0] = 0;
+		xCorners[1] = -8;
+		yCorners[1] = -8;
+		xCorners[2] = -8;
+		yCorners[2] = -6;
+		xCorners[3] = -10;
+		yCorners[3] = -4;
+		xCorners[4] = -10;
+		yCorners[4] = 4;
+		xCorners[5] = -8;
+		yCorners[5] = 6;
+		xCorners[6] = -8;
+		yCorners[6] = 8;
+		}
+		else
+		{
+		fill(0);
+		stroke(90);
+		xCorners[0] = 13;
+		yCorners[0] = 1;
+		xCorners[1] = -9;
+		yCorners[1] = -7;
+		xCorners[2] = -8;
+		yCorners[2] = -6;
+		xCorners[3] = -9;
+		yCorners[3] = -5;
+		xCorners[4] = -11;
+		yCorners[4] = 4;
+		xCorners[5] = -7;
+		yCorners[5] = 6;
+		xCorners[6] = -6;
+		yCorners[6] = 5;
+		}  
+		//convert degrees to radians for sin and cos         
+		double dRadians = myPointDirection*(Math.PI/180);                 
+		int xRotatedTranslated, yRotatedTranslated;    
+		beginShape();         
+		for(int nI = 0; nI < corners; nI++)    
+		{     
+  			//rotate and translate the coordinates of the floater using current direction 
+ 			 xRotatedTranslated = (int)((xCorners[nI]* Math.cos(dRadians)) - (yCorners[nI] * Math.sin(dRadians))+myCenterX);     
+  			yRotatedTranslated = (int)((xCorners[nI]* Math.sin(dRadians)) + (yCorners[nI] * Math.cos(dRadians))+myCenterY);      
+  			vertex(xRotatedTranslated,yRotatedTranslated);    
+		}   
+	endShape(CLOSE);  
+	}   
 	private void hyperspace()
 	{
 		if(warpCooldown == false)
@@ -539,7 +596,8 @@ class Bullet extends Floater
 	public double getPointDirection() {return myPointDirection;}
 	public void show()
 	{
-		fill(255);
+		fill(0);
+		stroke(255);
 		ellipse((float)myCenterX, (float)myCenterY, 5, 5);
 	}
 }
@@ -568,8 +626,8 @@ class Trail extends Floater
 	public int getColor() {return myColor;}
 	public void show()
 	{
-		noStroke();
-		fill(myColor);
+		stroke(myColor);
+		fill(0);
 		ellipse((float)myCenterX, (float)myCenterY, 5, 5);
 		if(myColor > 0) {myColor = myColor - 17;}
 	}
@@ -616,6 +674,23 @@ class Asteroid extends Floater
 	public double getDirectionY() {return myDirectionY;}  
 	public void setPointDirection(int degrees) {myPointDirection = degrees;}   
 	public double getPointDirection() {return myPointDirection;}
+	public void show () 
+	{             
+		fill(0);   
+		stroke(myColor);    
+		//convert degrees to radians for sin and cos         
+		double dRadians = myPointDirection*(Math.PI/180);                 
+		int xRotatedTranslated, yRotatedTranslated;    
+		beginShape();         
+		for(int nI = 0; nI < corners; nI++)    
+		{     
+  			//rotate and translate the coordinates of the floater using current direction 
+ 			 xRotatedTranslated = (int)((xCorners[nI]* Math.cos(dRadians)) - (yCorners[nI] * Math.sin(dRadians))+myCenterX);     
+  			yRotatedTranslated = (int)((xCorners[nI]* Math.sin(dRadians)) + (yCorners[nI] * Math.cos(dRadians))+myCenterY);      
+  			vertex(xRotatedTranslated,yRotatedTranslated);    
+		}   
+	endShape(CLOSE);  
+	}   
 	public void move()
 	{
 			rotate(rotSpeed);
