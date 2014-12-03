@@ -28,9 +28,10 @@ private ArrayList <Trail> ShipTrail;
 private SpaceShip Atari = new SpaceShip();
 
 //The starting amount of Asteroids (Placeholder)
-private int asteroidCount = 7;
+private int asteroidCount = 0;
 
 //Menu-related
+private int difficulty = 2;
 private int startColor = 0;
 private float highScore = 0;
 private float timer = 0;
@@ -117,6 +118,10 @@ public void draw()
 		}
 		if (gameOver == false)
 		{
+			if(AsteroidField.size() < asteroidCount)
+			{
+				AsteroidField.add(new Asteroid());
+			}
 			Atari.show();
 			Atari.move();
 			Atari.chargeboost();
@@ -216,7 +221,7 @@ public void draw()
 		{
 			Atari.show();
 			Atari.move();
-			Atari.rotate((int)(Math.random()*3)-1);
+			Atari.rotate(-1);
 			textSize(70);
 			fill(255);
 			text("GAME OVER",195,400);
@@ -326,6 +331,24 @@ public void draw()
 		fill(startColor);
 		textSize(50);
 		text("- Press SPACE to Start -", 110, 500);
+		fill(255);
+		text("Difficulty:", 110, 600);
+		if(difficulty == 1)
+		{
+			text("Easy", 375, 600);
+		}
+		else if(difficulty == 2)
+		{
+			text("Normal", 375, 600);
+		}
+		else if(difficulty == 3)
+		{
+			text("Hard", 375, 600);
+		}
+		else if(difficulty == 4)
+		{
+			text("Lunatic", 375, 600);
+		}
 	}
 }
 public void keyPressed()
@@ -338,14 +361,32 @@ public void keyPressed()
 		}
 		else if (menu == true)
 		{
+			if(difficulty == 1)
+			{
+				asteroidCount = 5;
+			}
+			else if(difficulty == 2)
+			{
+				asteroidCount = 7;
+			}
+			else if(difficulty == 3)
+			{
+				asteroidCount = 10;
+			}
+			else if(difficulty == 4)
+			{
+				asteroidCount = 15;
+			}
 			background(255);
 			menu = false;
 		}
 	}
-	if (keyCode == UP) {boostKey = true; }
-	if (keyCode == LEFT) {leftKey = true;}
-	if (keyCode == RIGHT) {rightKey = true;}
-	if (keyCode == DOWN) {warpKey = true;}
+	if (keyCode == UP && menu == false) {boostKey = true;}
+	else if (keyCode == UP && difficulty < 4) {difficulty = difficulty + 1;}
+	if (keyCode == LEFT && menu == false) {leftKey = true;}
+	if (keyCode == RIGHT && menu == false) {rightKey = true;}
+	if (keyCode == DOWN && menu == false) {warpKey = true;}
+	else if (keyCode == DOWN && difficulty > 1) {difficulty = difficulty - 1;}
 	if (keyCode == CONTROL) 
 	{
 		if (charging == false && chargeCooldown == false && gameOver == false)
