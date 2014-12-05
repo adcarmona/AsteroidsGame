@@ -29,10 +29,12 @@ private SpaceShip Atari = new SpaceShip();
 
 //The starting amount of Asteroids (Placeholder)
 private int asteroidCount = 0;
+private int asteroidStart = 0;
 
 //Menu-related
 private int difficulty = 2;
 private int startColor = 0;
+private int gameoverRotation = -1;
 private float highScore = 0;
 private float timer = 0;
 private boolean menu = true;
@@ -57,13 +59,14 @@ private boolean gameOver = false;
 
 public void setup() 
 {
+	frameRate(60);
 	size(800,800);
 	Stars = new Star[100];
 	AsteroidField = new ArrayList <Asteroid>();
 	Ammo = new ArrayList <Bullet>();
 	ShipTrail = new ArrayList <Trail>();
 	for(int i=0; i<Stars.length; i++) {Stars[i] = new Star();}
-	for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid());}
+	for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid((int)(Math.random()*800),(int)(Math.random()*800)));}
 }
 public void draw() 
 {
@@ -72,6 +75,10 @@ public void draw()
 		if (warpCooldown == true) 
 		{
 			fill(0,0,0,60);
+			line(0, Atari.getY(), Atari.getX() - 30, Atari.getY());
+			line(800, Atari.getY(), Atari.getX() + 30, Atari.getY());
+			line(Atari.getX(), 0, Atari.getX(), Atari.getY() - 30);
+			line(Atari.getX(), 800, Atari.getX(), Atari.getY() + 30);
 		}
 		else 
 		{
@@ -105,14 +112,14 @@ public void draw()
 		}
 		if (Ammo.size() > 0)
 		{
-			for (int i = 0; i < Ammo.size(); i++)
+			for (int b = 0; b < Ammo.size(); b++)
 			{
-				Bullet bullet = Ammo.get(i);
+				Bullet bullet = Ammo.get(b);
 				bullet.move();
 				bullet.show();
 				if (bullet.getX() > 799 || bullet.getX() < 1 || bullet.getY() > 799 || bullet.getY() < 1)
 				{
-					Ammo.remove(i);
+					Ammo.remove(b);
 				}
 			}
 		}
@@ -120,7 +127,11 @@ public void draw()
 		{
 			if(AsteroidField.size() < asteroidCount)
 			{
-				AsteroidField.add(new Asteroid());
+				asteroidStart = (int)(Math.random()*4);
+				if (asteroidStart == 0) {AsteroidField.add(new Asteroid(0, (int)(Math.random()*800)));}
+				if (asteroidStart == 1) {AsteroidField.add(new Asteroid(800, (int)(Math.random()*800)));}
+				if (asteroidStart == 2) {AsteroidField.add(new Asteroid((int)(Math.random()*800), 0));}
+				if (asteroidStart == 3) {AsteroidField.add(new Asteroid((int)(Math.random()*800), 800));}
 			}
 			Atari.show();
 			Atari.move();
@@ -199,6 +210,22 @@ public void draw()
 				}
 
 			}
+			if (Ammo.size() > 0)
+			{
+				for(int c = 0; c < Ammo.size(); c++)
+				{
+					if (dist((float)AsteroidField.get(i).getX(), (float)AsteroidField.get(i).getY(), Ammo.get(c).getX(), Ammo.get(c).getY()) < 30)
+					{
+						for (int fColor = 150; fColor < 1; fColor--)
+						{
+							AsteroidField.get(i).setColor(fColor);
+						}
+						AsteroidField.remove(i);
+						Ammo.remove(c);
+						break;
+					}
+				}
+			}
 		}
 		if (gameOver == false)
 		{
@@ -221,7 +248,8 @@ public void draw()
 		{
 			Atari.show();
 			Atari.move();
-			Atari.rotate(-1);
+			Atari.rotate(gameoverRotation);
+			warpCooldown = false;
 			textSize(70);
 			fill(255);
 			text("GAME OVER",195,400);
@@ -407,12 +435,13 @@ public void keyPressed()
 		Atari.setDirectionX(0);
 		Atari.setDirectionY(0);
 		Atari.setPointDirection(0);
+		gameoverRotation = (int)(Math.random()*5)-2;
 		chargeCooldown = false;
 		warpCooldown = false;
 		if (timer > highScore) {highScore = timer;}
 		timer = 0;
 		AsteroidField.clear();
-		for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid());}
+		for(int i=0; i<asteroidCount; i++) {AsteroidField.add(new Asteroid((int)(Math.random()*800),(int)(Math.random()*800)));}
 		menu = true;
 	}
 }
@@ -692,7 +721,7 @@ class Trail extends Floater
 class Asteroid extends Floater
 {
 	private int rotSpeed;
-	Asteroid()
+	Asteroid(int initialX, int initialY)
 	{
 		myColor = 150;
 		corners = 8;
@@ -714,8 +743,8 @@ class Asteroid extends Floater
 		yCorners[6] = 0;
 		xCorners[7] = (int)(Math.random()*41)-42;
 		yCorners[7] = (int)(Math.random()*41)-42;
-		myCenterX = (int)(Math.random()*800);
-		myCenterY = (int)(Math.random()*800);
+		myCenterX = initialX;
+		myCenterY = initialY;
 		myDirectionX = (int)(Math.random()*7)-4;
 		myDirectionY = (int)(Math.random()*7)-4;
 		myPointDirection = (int)(Math.random()*360);
@@ -731,8 +760,10 @@ class Asteroid extends Floater
 	public double getDirectionY() {return myDirectionY;}  
 	public void setPointDirection(int degrees) {myPointDirection = degrees;}   
 	public double getPointDirection() {return myPointDirection;}
+	public void setColor(int aColor) {myColor = aColor;}
+	public int getColor() {return myColor;}
 	public void show () 
-	{             
+	{
 		fill(0);   
 		stroke(myColor);    
 		//convert degrees to radians for sin and cos         
@@ -744,8 +775,8 @@ class Asteroid extends Floater
   			//rotate and translate the coordinates of the floater using current direction 
  			 xRotatedTranslated = (int)((xCorners[nI]* Math.cos(dRadians)) - (yCorners[nI] * Math.sin(dRadians))+myCenterX);     
   			yRotatedTranslated = (int)((xCorners[nI]* Math.sin(dRadians)) + (yCorners[nI] * Math.cos(dRadians))+myCenterY);      
-  			vertex(xRotatedTranslated,yRotatedTranslated);    
-		}   
+  			vertex(xRotatedTranslated,yRotatedTranslated);      
+		}
 	endShape(CLOSE);  
 	}   
 	public void move()
